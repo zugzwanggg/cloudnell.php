@@ -104,4 +104,26 @@
 		}
 
 	}
+
+	// add 1 - set TG id and return waiter info
+	if (isset($_POST['edit_waiter_id']) && isset($_POST['telegram_id'])) {
+	    $waiterId = $_POST['edit_waiter_id'];
+	    $tgId = $_POST['telegram_id'];
+	    $query_s = $link->query("SELECT * FROM `personal` WHERE `id` = '$waiterId'");
+	    $dataWaiter = $query_s->fetch_assoc();
+	
+	    $status = 'error';
+	    $data = [];
+	    if (isset($dataWaiter[0])) {
+	        // TODO telegram_id ?
+	        $data = $dataWaiter[0];
+	        $query_upd = $link->query("UPDATE `personal` SET `telegram_id` = '$tgId' WHERE `id` = '$waiterId'");
+	        if ($query_upd) {
+	            $data['telegram'] = $tgId;
+	            $status = 'success';
+	        }
+	    }
+	
+	    echo json_encode(['status' => $status, 'data' => $data]);
+	}	
 ?>
