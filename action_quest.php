@@ -40,19 +40,32 @@
 		$id_desc = $row['id'];
 		$id_cafe = $row['id_cafe'];
 
-		$query_s = $link->query("SELECT `id` FROM `personal` WHERE `id` IN (SELECT `id_waiter` FROM `service_desc` WHERE `id_desc` = '$id_desc') AND `id_employees` = '$id_employees'");
+		$query_s = $link->query("SELECT `id`,`telegram_id` FROM `personal` WHERE `id` IN (SELECT `id_waiter` FROM `service_desc` WHERE `id_desc` = '$id_desc') AND `id_employees` = '$id_employees'");
 
 		$data = [];
+    $telegram_ids = [];
 
 		while($row = $query_s->fetch_assoc()){
 			$data[0]['id_cafe'] = $id_cafe;
 			$data[0]['id_desc'] = $id_desc;
 			$data[0]['user_prersonal_id'][] = $row['id'];
+      $telegram_ids[] = $row['telegram_id'];
 		}	
 
 		$data[0]['id_employees'] = $id_employees;
+
+    $query_m = $link->query("SELECT `telegram_id` FROM `managers` WHERE `id_cafe` = '$id_cafe'");
+    $manager = $query_m->fetch_assoc();
+    $manager_telegram_id = $manager['telegram_id'];
 		
-		echo json_encode(['status'=>'success','data'=>$data]);
+		echo json_encode(
+      [
+      'status'=>'success',
+      'data'=>$data,
+      'employee_telegram_id' => $telegram_ids[0],
+      'manager_telegram_id' => $manager_telegram_id
+      ]
+    );
 	}
 
 	if(isset($_POST['get_user_info'])){

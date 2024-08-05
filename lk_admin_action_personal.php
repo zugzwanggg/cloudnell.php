@@ -138,7 +138,8 @@
 
 	if(isset($_POST['edit_waiter_id'])){
 		$id = +FILTER($_POST['edit_waiter_id']);
-		$query_s = $link->query("SELECT * FROM `personal` WHERE `id` = '$id' AND `id_cafe` = '$_SESSION[id_cafe]'");
+    $tgId = +FILTER($_POST['telegram_id']);
+		$query_s = $link->query("SELECT * FROM `personal` WHERE `id` = '$id' AND `telegram_id` = '$tgId' AND `id_cafe` = '$_SESSION[id_cafe]'");
 		$row = $query_s->fetch_assoc();
 
 		$query_s = $link->query("SELECT `id_desc` FROM `service_desc` WHERE `id_waiter` = '$id'");
@@ -155,6 +156,7 @@
 
 	if(isset($_POST['id_edit_personal'])){
 		$id  = +FILTER($_POST['id_edit_personal']);
+    $tgId = +FILTER($_POST['telegram_id']);
 		$edit_email_pers = FILTER($_POST['edit_email_pers']);
 		$edit_name_pers = FILTER($_POST['edit_name_pers']);
 		$edit_job_pers = FILTER($_POST['edit_job_pers']);
@@ -173,7 +175,7 @@
 			$row['id_m']++;
 		}
 
-		$query_s = $link->query("UPDATE `personal` SET `email` = '$edit_email_pers', `login` = '$edit_name_pers', `job_title` = '$edit_job_pers', `descript` = '$edit_descript_pers' WHERE `id` = '$id'");
+		$query_s = $link->query("UPDATE `personal` SET `email` = '$edit_email_pers', `login` = '$edit_name_pers', `job_title` = '$edit_job_pers', `descript` = '$edit_descript_pers' WHERE `id` = '$id' AND `telegram_id` = '$tgId'");
 
 		$data['ids'] = $id;
 
@@ -191,7 +193,7 @@
 
 			move_uploaded_file($tmp_name,$uploads_dir.'/'.$name);
 
-			$query_s = $link->query("UPDATE `personal` SET `photo_profile` = '$name' WHERE `id` = '$id'");
+			$query_s = $link->query("UPDATE `personal` SET `photo_profile` = '$name' WHERE `id` = '$id' AND `telegram_id` = '$tgId'");
 
 			$data['edit_photo'] = $name;
 		}
